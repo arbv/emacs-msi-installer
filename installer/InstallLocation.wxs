@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include Config.wxi?>
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <!-- Write Installation Path to registry -->
+      <Component Id="RegValueProductInstallPath" Guid="{E97B79B2-D86D-4EF4-96CE-F7CEF7A5836D}" Win64="$(var.Win64)">
+        <RegistryValue Id="RegValueInstallPath"
+                       Root="HKLM"
+                       Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
+                       Name="Path"
+                       Value="[INSTALLDIR]"
+                       Type="string"
+                       KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>
+

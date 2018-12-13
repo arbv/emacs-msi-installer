@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include Config.wxi?>
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <!-- context menu description  -->
+      <Component Id="OpenWithEmacsMenuEntry"
+                 Guid="{83CC2C5A-982A-4128-AE39-79FD0DF66640}"
+                 Win64="$(var.Win64)">
+        <RegistryKey Root="HKCR"
+                     Key="*\shell\openwemacs">
+          <RegistryValue Type="string"
+                         Value="Open with &amp;Emacs"
+                         KeyPath="yes"/>
+          <RegistryKey Key="command">
+            <RegistryValue Type="string"
+                           Value='[INSTALLDIR]bin\emacsclientw.exe -n -a "" "%1"'/>
+          </RegistryKey>
+        </RegistryKey>
+      </Component>
+      <Component Id="OpenWithEmacsNewFrameMenuEntry"
+                 Guid="{C5D3F37B-A5B7-4626-AD6D-08063D4CE3BF}"
+                 Win64="$(var.Win64)">
+        <RegistryKey Root="HKCR"
+                     Key="*\shell\openwemacsnewframe">
+          <RegistryValue Type="string"
+                         Value="Open with Emacs (new &amp;frame)"
+                         KeyPath="yes"/>
+          <RegistryKey Key="command">
+            <RegistryValue Type="string"
+                           Value='[INSTALLDIR]bin\emacsclientw.exe -n -c -a "" "%1"'/>
+          </RegistryKey>
+        </RegistryKey>
+      </Component>
+    </DirectoryRef>
+    <!-- shell context menu component group  -->
+    <ComponentGroup Id="ShellContextMenuEntries">
+      <ComponentRef Id="OpenWithEmacsMenuEntry"/>
+      <ComponentRef Id="OpenWithEmacsNewFrameMenuEntry"/>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
+

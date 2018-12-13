@@ -10,6 +10,7 @@
              Absent="disallow"
              Level="1">
       <ComponentGroupRef Id="EmacsData" Primary="yes" />
+      <ComponentRef Id="RegValueProductInstallPath"/>
       <Feature Id="StartMenuShortcuts"
                Title="Start Menu shortcuts">
         <ComponentGroupRef Id="ProductStartMenuShortcuts"/>
@@ -22,6 +23,10 @@
       <!--          Title="Quick Launch shortcuts"> -->
       <!--   <ComponentGroupRef Id="ProductQuickLaunchShortcuts"/> -->
       <!-- </Feature> -->
+      <Feature Id="ContextMenuEntries"
+               Title="'Open With Emacs' menu entries">
+        <ComponentGroupRef Id="ShellContextMenuEntries"/>
+      </Feature>
       <Feature Id="SetEMACS_INSTALLDIR"
                Title="Set 'EMACS_INSTALLDIR' environmental variable">
         <ComponentRef Id="SetEnv_EMACS_INSTALLDIR"/>
