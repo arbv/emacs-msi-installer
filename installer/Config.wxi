@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?include Version.wxi?>
+<Include>
+  <!--
+      Manufacturer and  product name
+  -->
+  <?define ProductName="GNU Emacs" ?>
+  <?define ManufacturerName="Free Software Foundation" ?>
+  <!--
+      Versioning. These have to be changed for upgrades.
+      It's not enough to just include newer files.
+  -->
+  <!--
+      NOTE: The following variables are defined in the
+      automatically generated 'Version.wxi' file.
+  -->
+  <!--
+  <?define MajorVersion="3" ?>
+  <?define MinorVersion="1" ?>
+  <?define BuildVersion="0" ?>
+  -->
+  <!--
+      Supported architecture
+  -->
+  <!-- <?define Platform="x86" ?> -->
+  <!-- Language code -->
+  <?define Language="1033" ?>
+  <!-- Revision is NOT used by WiX in the upgrade procedure -->
+  <?define Revision="0" ?>
+  <!-- Full version number to display -->
+  <?define VersionNumber="$(var.MajorVersion).$(var.MinorVersion).$(var.BuildVersion)" ?>
+  <?define VersionNumberWithRevision="$(var.MajorVersion).$(var.MinorVersion).$(var.BuildVersion).$(var.Revision)" ?>
+  <!--
+      Icon in Add/Remove programs
+  -->
+  <!-- <?define ProductIconFile=".\CormanLispIDE\RES\CormanLisp.ICO" ?> -->
+  <!--
+      Visual C++ Runtime Version.
+      Comment it out to not include VC++ redistributable.
+  -->
+  <!-- <?define VCRedist="140" ?> -->
+  <!--
+      Set the following variables to to "yes" to include
+      corresponding parts of Visual C++ Runtime.
+  -->
+  <!--
+  <?define VCRedist_MFC="yes" ?>
+  <?define VCRedist_OpenMP="no" ?>
+  <?define VCRedist_CXXAMP="no" ?>
+  -->
+  <!--
+      Upgrade code HAS to be the same for all updates.
+      Once you've chosen it don't change it.
+  -->
+  <?define UpgradeCode="{E2A37E5F-B467-4DD2-9CA1-943ACE801910}" ?>
+  <!--
+      The name of your application *.exe files. These will be used to kill the process when updating
+      and creating the desktop shortcut
+  -->
+  <?define GuiProcessName="emacsclientw.exe" ?>
+  <?define ConsoleProcessName="emacs.exe" ?>
+
+  <!-- Paths to directories -->
+  <?define EmacsDirectoryPath=".\emacs" ?>
+</Include>
+

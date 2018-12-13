@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include Config.wxi?>
+  <Fragment>
+    <DirectoryRef Id="ProgramMenuDir">
+      <Component Id="EmacsStartMenuShortcuts"
+                 Guid="{C5E33CA0-E966-4B74-B8EE-BA5992A8F012}"
+                 Win64="$(var.Win64)">
+        <Shortcut Id="EmacsStart.lnk"
+                  Directory="ProgramMenuDir"
+                  Name="$(var.ProductName).lnk"
+                  Target="[INSTALLDIR]\bin\runemacs.exe"/>
+        <RegistryValue Action="write"
+                       Type="integer"
+                       Root="HKCU"
+                       Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
+                       Name="installed"
+                       Value="1" KeyPath="yes"/>
+        <RemoveFolder Id="ProgramMenuDir"
+                      Directory="ProgramMenuDir"
+                      On="uninstall" />
+      </Component>
+    </DirectoryRef>
+    <!-- Desktop shortcuts -->
+    <DirectoryRef Id="DesktopDir">
+      <Component Id="EmacsDesktopShortcuts"
+                 Guid="{33AA103C-8046-4BF6-BF1B-209CE47D45BB}"
+                 Win64="$(var.Win64)">
+        <Shortcut Id="EmacsDesktop.lnk"
+                  Directory="DesktopDir"
+                  Name="$(var.ProductName).lnk"
+                  Target="[INSTALLDIR]\bin\runemacs.exe"/>
+        <RegistryValue Action="write"
+                       Type="integer"
+                       Root="HKCU"
+                       Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
+                       Name="DesktopShortcutsInstalled"
+                       Value="1" KeyPath="yes"/>
+        <RemoveFolder Id="DesktopDir"
+                      Directory="DesktopDir"
+                      On="uninstall" />
+      </Component>
+    </DirectoryRef>
+    <!-- Quick Launch shortcuts -->
+    <!-- <DirectoryRef Id="QuickLaunchDir"> -->
+    <!--   <Component Id="EmacsQuickLaunchShortcuts" -->
+    <!--              Guid="{66512424-17EF-47CA-9010-B2AF60BC6735}" -->
+    <!--              Win64="$(var.Win64)"> -->
+    <!--     <Shortcut Id="EmacsQuickLaunch.lnk" -->
+    <!--               Directory="QuickLaunchDir" -->
+    <!--               Name="$(var.ProductName).lnk" -->
+    <!--               Target="[INSTALLDIR]\bin\runemacs.exe"/> -->
+    <!--     <RegistryValue Action="write" -->
+    <!--                    Type="integer" -->
+    <!--                    Root="HKCU" -->
+    <!--                    Key="Software\$(var.ManufacturerName)\$(var.ProductName)" -->
+    <!--                    Name="QuickLaunchShortcutsInstalled" -->
+    <!--                    Value="1" KeyPath="yes"/> -->
+    <!--     <RemoveFolder Id="QuickLaunchDir" -->
+    <!--                   Directory="QuickLaunchDir" -->
+    <!--                   On="uninstall" /> -->
+    <!--   </Component> -->
+    <!-- </DirectoryRef> -->
+
+    <!-- Product shortcuts -->
+
+    <!-- Start Menu -->
+    <ComponentGroup Id="ProductStartMenuShortcuts">
+      <ComponentRef Id="EmacsStartMenuShortcuts"/>
+    </ComponentGroup>
+    <!-- Desktop -->
+    <ComponentGroup Id="ProductDesktopShortcuts">
+      <ComponentRef Id="EmacsDesktopShortcuts"/>
+    </ComponentGroup>
+    <!-- Quick Launch -->
+    <!-- <ComponentGroup Id="ProductQuickLaunchShortcuts"> -->
+    <!--   <ComponentRef Id="EmacsQuickLaunchShortcuts"/> -->
+    <!-- </ComponentGroup> -->
+  </Fragment>
+</Wix>

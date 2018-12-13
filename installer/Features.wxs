@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include Config.wxi?>
+  <Fragment>
+    <!-- features description -->
+    <Feature Id="ProductCore"
+             ConfigurableDirectory="INSTALLDIR"
+             Title="$(var.ProductName)"
+             Display="expand"
+             Absent="disallow"
+             Level="1">
+      <ComponentGroupRef Id="EmacsData" Primary="yes" />
+      <Feature Id="StartMenuShortcuts"
+               Title="Start Menu shortcuts">
+        <ComponentGroupRef Id="ProductStartMenuShortcuts"/>
+      </Feature>
+      <Feature Id="DesktopShortcuts"
+               Title="Desktop shortcuts">
+        <ComponentGroupRef Id="ProductDesktopShortcuts"/>
+      </Feature>
+      <!-- <Feature Id="QuickLaunchShortcuts" -->
+      <!--          Title="Quick Launch shortcuts"> -->
+      <!--   <ComponentGroupRef Id="ProductQuickLaunchShortcuts"/> -->
+      <!-- </Feature> -->
+      <Feature Id="SetEMACS_INSTALLDIR"
+               Title="Set 'EMACS_INSTALLDIR' environmental variable">
+        <ComponentRef Id="SetEnv_EMACS_INSTALLDIR"/>
+      </Feature>
+      <Feature Id="SetPATH"
+               Title="Add to 'Path'">
+        <ComponentRef Id="AddProductToPath" />
+      </Feature>
+      <!-- VC++ redistributable -->
+      <?ifdef VCRedist ?>
+      <Feature Id="VCRedistInstall"
+               Title="Visual C++ Runtime (Version: $(var.VCRedist))">
+        <MergeRef Id="VCRedist_CRT" />
+        <?if $(var.VCRedist_MFC) = "yes" ?>
+        <MergeRef Id="VCRedist_MFC" />
+        <MergeRef Id="VCRedist_MFCLOC" />
+        <?endif?>
+        <?if $(var.VCRedist_OpenMP) = "yes" ?>
+        <MergeRef Id="VCRedist_OpenMP" />
+        <?endif?>
+        <?if $(var.VCRedist_CXXAMP) = "yes" ?>
+        <MergeRef Id="VCRedist_CXXAMP" />
+        <?endif?>
+      </Feature>
+      <?endif?>
+    </Feature>
+    <!-- Product features -->
+    <FeatureGroup Id="ProductFeatures">
+      <FeatureRef Id="ProductCore" />
+    </FeatureGroup>
+  </Fragment>
+</Wix>
+

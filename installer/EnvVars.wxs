@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?include Config.wxi?>
+  <Fragment>
+    <DirectoryRef Id="INSTALLDIR">
+      <!-- add product to path -->
+      <Component Id="AddProductToPath"
+                 Guid="{847B2642-A919-47A1-AC81-D2A8EA44ABCD}"
+                 KeyPath="yes"
+                 Win64="$(var.Win64)">
+        <Environment Id="Env_PATH"
+                     Name="PATH"
+                     Value="[INSTALLDIR]bin\"
+                     Separator=";"
+                     Action="set"
+                     Part="last"
+                     System="yes" />
+      </Component>
+      <Component Id="SetEnv_EMACS_INSTALLDIR"
+                 Guid="{9E78634F-63F7-439E-BF51-B1D53194E9A3}"
+                 KeyPath="yes"
+                 Win64="$(var.Win64)">
+        <Environment Id="Env_EMACS_INSTALLDIR"
+                     Name="EMACS_INSTALLDIR"
+                     Value="[INSTALLDIR]"
+                     Action="set"
+                     System="yes" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

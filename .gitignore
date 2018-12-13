@@ -1,0 +1,9 @@
+emacs/
+# installer
+*.msi
+*.wixobj
+*.wixpdb
+installer/Emacs.wxs
+installer/Version.wxi
+installer/LICENSE.rtf
+
