@@ -55,6 +55,15 @@
   -->
   <?define UpgradeCode="{E2A37E5F-B467-4DD2-9CA1-943ACE801910}" ?>
   <!--
+      MSIFASTINSTALL property value is used to speed up the installation.
+      It is supported starting from Windows Installer 5.0.
+      It is a bit mask of the following values (default - 0):
+      1 - No system restore point is saved for this installation.
+      2 - Perform only File Costing and skip checking other costs.
+      4 - Reduce the frequency of progress messages.
+  -->
+  <?define MSIFASTINSTALL=7 ?>
+  <!--
       The name of your application *.exe files. These will be used to kill the process when updating
       and creating the desktop shortcut
   -->
