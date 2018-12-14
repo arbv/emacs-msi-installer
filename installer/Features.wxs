@@ -24,7 +24,7 @@
       <!--   <ComponentGroupRef Id="ProductQuickLaunchShortcuts"/> -->
       <!-- </Feature> -->
       <Feature Id="ContextMenuEntries"
-               Title="'Open With Emacs' menu entries">
+               Title='"Open with Emacs Client" context menu entries'>
         <ComponentGroupRef Id="ShellContextMenuEntries"/>
       </Feature>
       <Feature Id="SetEMACS_INSTALLDIR"
@@ -32,7 +32,7 @@
         <ComponentRef Id="SetEnv_EMACS_INSTALLDIR"/>
       </Feature>
       <Feature Id="SetPATH"
-               Title="Add to 'Path'">
+               Title="Add the installation directory to 'Path'">
         <ComponentRef Id="AddProductToPath" />
       </Feature>
       <!-- VC++ redistributable -->

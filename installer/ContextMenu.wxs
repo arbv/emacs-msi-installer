@@ -10,7 +10,7 @@
         <RegistryKey Root="HKCR"
                      Key="*\shell\openwemacs">
           <RegistryValue Type="string"
-                         Value="Open with &amp;Emacs"
+                         Value="Open with &amp;Emacs Client"
                          KeyPath="yes"/>
           <RegistryKey Key="command">
             <RegistryValue Type="string"
@@ -24,7 +24,7 @@
         <RegistryKey Root="HKCR"
                      Key="*\shell\openwemacsnewframe">
           <RegistryValue Type="string"
-                         Value="Open with Emacs (new &amp;frame)"
+                         Value="Open with Emacs Client (new &amp;frame)"
                          KeyPath="yes"/>
           <RegistryKey Key="command">
             <RegistryValue Type="string"
