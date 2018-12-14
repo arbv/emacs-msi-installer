@@ -7,8 +7,8 @@ rem configuration Variables
 set InstallerName=emacs-installer.msi
 
 set GeneratedWXSFiles=.\installer\Emacs.wxs
-set InstallerFiles= %GeneratedWXSFiles% .\installer\Features.wxs .\installer\InstallLocation.wxs .\installer\ContextMenu.wxs .\installer\EnvVars.wxs .\installer\Shortcuts.wxs .\installer\Main.wxs
-set InstallerObjectFiles= .\installer\Emacs.wixobj .\installer\Features.wixobj .\installer\InstallLocation.wixobj .\installer\ContextMenu.wixobj .\installer\EnvVars.wixobj .\installer\Shortcuts.wixobj .\installer\Main.wixobj
+set InstallerFiles= %GeneratedWXSFiles% .\installer\Features.wxs .\installer\ContextMenu.wxs .\installer\EnvVars.wxs .\installer\Shortcuts.wxs .\installer\Main.wxs
+set InstallerObjectFiles= .\installer\Emacs.wixobj .\installer\Features.wixobj .\installer\ContextMenu.wixobj .\installer\EnvVars.wixobj .\installer\Shortcuts.wixobj .\installer\Main.wixobj
 
 set HeatOptions=-gg -srd -scom -sreg -sfrag -ke -dr INSTALLDIR  -t .\installer\heat-postprocess.xsl
 set WixExtensions=-ext WixUIExtension -ext WixUtilExtension

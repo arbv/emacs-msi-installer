@@ -2,15 +2,10 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?include Config.wxi?>
   <Fragment>
-    <!-- features description -->
-    <Feature Id="ProductCore"
-             ConfigurableDirectory="INSTALLDIR"
-             Title="$(var.ProductName)"
-             Display="expand"
-             Absent="disallow"
-             Level="1">
+    <!-- Product features -->
+    <FeatureGroup Id="ProductFeatures">
+      <!-- features description -->
       <ComponentGroupRef Id="EmacsData" Primary="yes" />
-      <ComponentRef Id="RegValueProductInstallPath"/>
       <Feature Id="StartMenuShortcuts"
                Title="Start Menu shortcuts">
         <ComponentGroupRef Id="ProductStartMenuShortcuts"/>
@@ -28,11 +23,11 @@
         <ComponentGroupRef Id="ShellContextMenuEntries"/>
       </Feature>
       <Feature Id="SetEMACS_INSTALLDIR"
-               Title="Set 'EMACS_INSTALLDIR' environmental variable">
+               Title='Set "EMACS_INSTALLDIR" environmental variable'>
         <ComponentRef Id="SetEnv_EMACS_INSTALLDIR"/>
       </Feature>
       <Feature Id="SetPATH"
-               Title="Add the installation directory to 'Path'">
+               Title='Add the installation directory to "Path"'>
         <ComponentRef Id="AddProductToPath" />
       </Feature>
       <!-- VC++ redistributable -->
@@ -52,10 +47,6 @@
         <?endif?>
       </Feature>
       <?endif?>
-    </Feature>
-    <!-- Product features -->
-    <FeatureGroup Id="ProductFeatures">
-      <FeatureRef Id="ProductCore" />
     </FeatureGroup>
   </Fragment>
 </Wix>

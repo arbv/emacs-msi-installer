@@ -54,9 +54,9 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
                       Property="OLDER_VERSION_FOUND" />
     </Upgrade>
 
-    <!-- Install only on Windows XP SP2 or newer -->
-    <Condition Message="Your operating system version is not supported. Windows XP SP2 or newer is required.">
-      <![CDATA[Installed OR (((VersionNT > 501) OR ((VersionNT = 501) AND (ServicePackLevel >= 2))) AND MsiNTProductType = 1)]]>
+    <!-- Install only on Windows XP SP3 or newer -->
+    <Condition Message="Your operating system version is not supported. Windows XP SP3 or newer is required.">
+      <![CDATA[Installed OR (((VersionNT > 501) OR ((VersionNT = 501) AND (ServicePackLevel >= 3))) AND MsiNTProductType = 1)]]>
     </Condition>
 
     <!-- Installation sequence description -->
@@ -159,11 +159,33 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
                       Root="HKLM"
                       Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
                       Name="Path"
+                      Win64="$(var.Win64)"
                       />
     </Property>
-    
+
+    <!-- Write Installation Path to registry -->
+    <DirectoryRef Id="INSTALLDIR">
+      <Component Id="RegValueProductInstallPath" Guid="{E97B79B2-D86D-4EF4-96CE-F7CEF7A5836D}" Win64="$(var.Win64)">
+        <RegistryValue Id="RegValueInstallPath"
+                       Root="HKLM"
+                       Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
+                       Name="Path"
+                       Value="[INSTALLDIR]"
+                       Type="string"
+                       KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
     <!-- Features -->
-    <FeatureGroupRef Id="ProductFeatures" />
+    <Feature Id="RootFeature"
+             ConfigurableDirectory="INSTALLDIR"
+             Title="$(var.ProductName)"
+             Display="expand"
+             Absent="disallow"
+             Level="1">
+      <ComponentRef Id="RegValueProductInstallPath" />
+      <FeatureGroupRef Id="ProductFeatures" />
+    </Feature>
   </Product>
 </Wix>
 
