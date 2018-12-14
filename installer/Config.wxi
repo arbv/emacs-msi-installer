@@ -23,6 +23,7 @@
       Supported architecture
   -->
   <!-- <?define Platform="x86" ?> -->
+  <!-- <?define Win64="no" ?> -->
   <!-- Language code -->
   <?define Language="1033" ?>
   <!-- Revision is NOT used by WiX in the upgrade procedure -->
