@@ -9,7 +9,7 @@
     (insert "<Include>\n")
     (insert (format "  <?define MajorVersion=\"%d\" ?>\n" emacs-major-version))
     (insert (format "  <?define MinorVersion=\"%d\" ?>\n" emacs-minor-version))
-    (insert (format "  <?define BuildVersion=\"%d\" ?>\n" emacs-build-number))
+    (insert (format "  <?define BuildVersion=\"%d\" ?>\n" 0))
     (insert (format "  <?define Platform=\"%s\" ?>\n" (if (emacs-x86_64-build-p)
                                                           "x64"
                                                         "x86")))
