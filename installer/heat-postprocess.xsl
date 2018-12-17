@@ -27,6 +27,58 @@ http://windows-installer-xml-wix-toolset.687559.n2.nabble.com/Transform-output-o
     </xsl:copy>
   </xsl:template>
 
+  <!--
+      Alter File Table sequencing to improve performance of un/installation.
+      Info:
+      http://windows-installer-xml-wix-toolset.687559.n2.nabble.com/Performance-Issues-with-File-table-sequencing-td4777168.html
+      https://stackoverflow.com/questions/15967087/how-can-i-sort-file-sequence-in-wix?rq=1
+  -->
+  <xsl:template match="wix:File">
+    <xsl:variable name="parentDirName">
+      <!-- <xsl:value-of select="/wix:Wix/wix:Fragment/wix:DirectoryRef/wix:Directory/@Name"/> -->
+      <xsl:value-of select="''"/>
+    </xsl:variable>
+    <xsl:variable name="alphaNumeric">
+      <xsl:value-of select="'_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'"/>
+    </xsl:variable>
+    <xsl:copy>
+      <xsl:apply-templates select="@*"/>
+      <xsl:attribute name="Id">
+        <xsl:variable name="fileName">
+          <xsl:value-of select="concat($parentDirName, substring-after(@Source, '\'))"/>
+        </xsl:variable>
+        <!-- remove all non alphanumeric characters, make a unique string -->
+        <xsl:value-of select="concat(substring(translate($fileName, translate($fileName, $alphaNumeric, ''), ''), 1, 72 - string-length(@Id)), @Id)"/>
+      </xsl:attribute>
+    </xsl:copy>
+  </xsl:template>
+
+  <xsl:template match="wix:Directory">
+    <xsl:variable name="parentDirName">
+      <!-- <xsl:value-of select="/wix:Wix/wix:Fragment/wix:DirectoryRef/wix:Directory/@Name"/> -->
+      <xsl:value-of select="''"/>
+    </xsl:variable>
+    <xsl:variable name="parentPath">
+      <xsl:for-each select="ancestor::wix:Directory/@Name">
+        <xsl:value-of select="concat(.,'_')"/>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:variable name="alphaNumeric">
+      <xsl:value-of select="'_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'"/>
+    </xsl:variable>
+    <xsl:copy>
+      <xsl:apply-templates select="@*"/>
+      <xsl:attribute name="Id">
+        <xsl:variable name="fileName">
+          <xsl:value-of select="concat($parentDirName, concat($parentPath, @Name))"/>
+        </xsl:variable>
+        <!-- remove all non alphanumeric characters, make a unique string -->
+        <xsl:value-of select="concat(substring(translate($fileName, translate($fileName, $alphaNumeric, ''), ''), 1, 72 - string-length(@Id)), @Id)"/>
+      </xsl:attribute>
+      <xsl:apply-templates select="*"/>
+    </xsl:copy>
+  </xsl:template>
+
   <!-- Identity transform. -->
   <xsl:template match="@*|node()">
     <xsl:copy>
