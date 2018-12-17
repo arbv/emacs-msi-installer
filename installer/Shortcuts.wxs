@@ -2,6 +2,15 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?include Config.wxi?>
   <Fragment>
+    <!--
+        Unfortunately we have to disable ICE57 to add the shortcuts
+        properly and without the errors.
+        It is believed to be a false positive.
+    -->
+    <DirectoryRef Id="INSTALLDIR">
+      <Directory Id="EmacsBinDir" Name="bin" />
+    </DirectoryRef>
+
     <DirectoryRef Id="ProgramMenuDir">
       <Component Id="EmacsStartMenuShortcuts"
                  Guid="*"
@@ -9,12 +18,13 @@
         <Shortcut Id="EmacsStart.lnk"
                   Directory="ProgramMenuDir"
                   Name="$(var.ProductName).lnk"
-                  Target="[INSTALLDIR]\bin\runemacs.exe"/>
+                  Target="[INSTALLDIR]\bin\runemacs.exe"
+                  WorkingDirectory="EmacsBinDir" />
         <RegistryValue Action="write"
                        Type="integer"
-                       Root="HKCU"
+                       Root="HKMU"
                        Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
-                       Name="installed"
+                       Name="StartMenuShortcutsInstalled"
                        Value="1" KeyPath="yes"/>
         <RemoveFolder Id="ProgramMenuDir"
                       Directory="ProgramMenuDir"
@@ -29,10 +39,11 @@
         <Shortcut Id="EmacsDesktop.lnk"
                   Directory="DesktopDir"
                   Name="$(var.ProductName).lnk"
-                  Target="[INSTALLDIR]\bin\runemacs.exe"/>
+                  Target="[INSTALLDIR]\bin\runemacs.exe"
+                  WorkingDirectory="EmacsBinDir" />
         <RegistryValue Action="write"
                        Type="integer"
-                       Root="HKCU"
+                       Root="HKMU"
                        Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
                        Name="DesktopShortcutsInstalled"
                        Value="1" KeyPath="yes"/>
@@ -52,7 +63,7 @@
     <!--               Target="[INSTALLDIR]\bin\runemacs.exe"/> -->
     <!--     <RegistryValue Action="write" -->
     <!--                    Type="integer" -->
-    <!--                    Root="HKCU" -->
+    <!--                    Root="HKMU" -->
     <!--                    Key="Software\$(var.ManufacturerName)\$(var.ProductName)" -->
     <!--                    Name="QuickLaunchShortcutsInstalled" -->
     <!--                    Value="1" KeyPath="yes"/> -->
