@@ -169,7 +169,7 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
 
     <!-- Write Installation Path to registry -->
     <DirectoryRef Id="INSTALLDIR">
-      <Component Id="RegValueProductInstallPath" Guid="{E97B79B2-D86D-4EF4-96CE-F7CEF7A5836D}" Win64="$(var.Win64)">
+      <Component Id="RegValueProductInstallPath" Guid="*" Win64="$(var.Win64)">
         <RegistryValue Id="RegValueInstallPath"
                        Root="HKLM"
                        Key="Software\$(var.ManufacturerName)\$(var.ProductName)"

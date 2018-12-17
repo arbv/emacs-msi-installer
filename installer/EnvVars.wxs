@@ -5,8 +5,7 @@
     <DirectoryRef Id="INSTALLDIR">
       <!-- add product to path -->
       <Component Id="AddProductToPath"
-                 Guid="{847B2642-A919-47A1-AC81-D2A8EA44ABCD}"
-                 KeyPath="yes"
+                 Guid="*"
                  Win64="$(var.Win64)">
         <Environment Id="Env_PATH"
                      Name="PATH"
@@ -15,16 +14,29 @@
                      Action="set"
                      Part="last"
                      System="yes" />
+        <RegistryValue Action="write"
+                       Type="integer"
+                       Root="HKLM"
+                       Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
+                       Name="EnvAddedtoPath"
+                       Value="1"
+                       KeyPath="yes"/>
       </Component>
       <Component Id="SetEnv_EMACS_INSTALLDIR"
-                 Guid="{9E78634F-63F7-439E-BF51-B1D53194E9A3}"
-                 KeyPath="yes"
+                 Guid="*"
                  Win64="$(var.Win64)">
         <Environment Id="Env_EMACS_INSTALLDIR"
                      Name="EMACS_INSTALLDIR"
                      Value="[INSTALLDIR]"
                      Action="set"
                      System="yes" />
+        <RegistryValue Action="write"
+                       Type="integer"
+                       Root="HKLM"
+                       Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
+                       Name="EnvAddedEMACS_INSTALLDIR"
+                       Value="1"
+                       KeyPath="yes"/>
       </Component>
     </DirectoryRef>
   </Fragment>

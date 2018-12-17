@@ -5,7 +5,7 @@
     <DirectoryRef Id="INSTALLDIR">
       <!-- context menu description  -->
       <Component Id="OpenWithEmacsMenuEntry"
-                 Guid="{83CC2C5A-982A-4128-AE39-79FD0DF66640}"
+                 Guid="*"
                  Win64="$(var.Win64)">
         <RegistryKey Root="HKCR"
                      Key="*\shell\openwemacs">
@@ -19,7 +19,7 @@
         </RegistryKey>
       </Component>
       <Component Id="OpenWithEmacsNewFrameMenuEntry"
-                 Guid="{C5D3F37B-A5B7-4626-AD6D-08063D4CE3BF}"
+                 Guid="*"
                  Win64="$(var.Win64)">
         <RegistryKey Root="HKCR"
                      Key="*\shell\openwemacsnewframe">
