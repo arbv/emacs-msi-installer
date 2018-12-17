@@ -60,7 +60,7 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
     </Condition>
 
     <!-- Installation sequence description -->
-    <CustomAction Id="NewerVersionFound" Error="A newer version is installed." />
+    <CustomAction Id="NewerVersionFound" Error="A newer version of $(var.ProductName) is installed." />
     <InstallExecuteSequence>
       <!-- Check for newer versions with FindRelatedProducts and execute the custom action after it -->
       <Custom Action="NewerVersionFound" After="FindRelatedProducts">
