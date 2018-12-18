@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
+Created by Artem Boldariev <artem.boldarev@gmail.com>, 2018.
+This file is distributed under the terms of CC0 license (Public Domain).
+
+See the 'LICENSE.txt' file for the additional details.
+-->
+
+<!--
 Helpful WEB-pages about WiX:
     http://weblogs.sqlteam.com/mladenp/archive/2010/02/17/WiX-3-Tutorial-Understanding-main-WXS-and-WXI-file.aspx
     http://p-nand-q.com/programming/windows/wix/files.html
     https://github.com/sbcl/sbcl/blob/master/tools-for-build/wxs.lisp
+    https://helgeklein.com/blog/2014/09/real-world-example-wix-msi-application-installer/
+    https://blogs.technet.microsoft.com/alexshev/2008/02/10/from-msi-to-wix/
 
 Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn about WiX. Decompiling SBCL's installer and 7-zip's installer revealed a lot of useful information.
 -->
+
+<!-- installer configuration -->
+<?include Config.wxi ?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-
-  <!-- installer configuration -->
-  <?include Config.wxi ?>
-
   <Product Id="*"
            Name="$(var.ProductName) $(var.VersionNumber)"
            Language="$(var.Language)"
@@ -167,6 +175,34 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
     <Property Id="MSIFASTINSTALL">$(var.MSIFASTINSTALL)</Property>
     <?endif?>
 
+    <!-- Save and restore INSTALLDIR -->
+    
+    <!-- 
+         Save the command line value INSTALLDIR and restore it later in the sequence or
+         it will be overwritten by the value saved to the registry during an upgrade.
+         http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/
+    -->
+    <CustomAction Id="SaveCmdLineValueINSTALLDIR"
+                  Property="CMDLINE_INSTALLDIR"
+                  Value="[INSTALLDIR]"
+                  Execute="firstSequence" />
+    <CustomAction Id="SetFromCmdLineValueINSTALLDIR"
+                  Property="INSTALLDIR"
+                  Value="[CMDLINE_INSTALLDIR]"
+                  Execute="firstSequence" />
+    <InstallUISequence>
+      <Custom Action="SaveCmdLineValueINSTALLDIR" Before="AppSearch" />
+      <Custom Action="SetFromCmdLineValueINSTALLDIR" After="AppSearch">
+        CMDLINE_INSTALLDIR
+      </Custom>
+    </InstallUISequence>
+    <InstallExecuteSequence>
+      <Custom Action="SaveCmdLineValueINSTALLDIR" Before="AppSearch" />
+      <Custom Action="SetFromCmdLineValueINSTALLDIR" After="AppSearch">
+        CMDLINE_INSTALLDIR
+      </Custom>
+    </InstallExecuteSequence>
+
     <!-- Write Installation Path to registry -->
     <DirectoryRef Id="INSTALLDIR">
       <Component Id="RegValueProductInstallPath" Guid="*" Win64="$(var.Win64)">
@@ -186,7 +222,8 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
              Title="$(var.ProductName)"
              Display="expand"
              Absent="disallow"
-             Level="1">
+             Level="1"
+             AllowAdvertise="no">
       <ComponentRef Id="RegValueProductInstallPath" />
       <FeatureGroupRef Id="ProductFeatures" />
     </Feature>

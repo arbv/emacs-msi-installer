@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
+Created by Artem Boldariev <artem.boldarev@gmail.com>, 2018.
+This file is distributed under the terms of CC0 license (Public Domain).
+
+See the 'LICENSE.txt' file for the additional details.
+-->
+
+<!--
 http://windows-installer-xml-wix-toolset.687559.n2.nabble.com/Transform-output-of-heat-to-insert-an-include-statement-td7355923.html
 -->
 <xsl:stylesheet version="1.0"

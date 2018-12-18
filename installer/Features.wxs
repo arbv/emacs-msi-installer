@@ -1,39 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+Created by Artem Boldariev <artem.boldarev@gmail.com>, 2018.
+This file is distributed under the terms of CC0 license (Public Domain).
+
+See the 'LICENSE.txt' file for the additional details.
+-->
+
+<?include Config.wxi?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <?include Config.wxi?>
   <Fragment>
     <!-- Product features -->
     <FeatureGroup Id="ProductFeatures">
       <!-- features description -->
       <ComponentGroupRef Id="EmacsData" Primary="yes" />
       <Feature Id="StartMenuShortcuts"
-               Title="Start Menu shortcuts">
+               Title="Start Menu shortcuts"
+               AllowAdvertise="no">
         <ComponentGroupRef Id="ProductStartMenuShortcuts"/>
       </Feature>
       <Feature Id="DesktopShortcuts"
-               Title="Desktop shortcuts">
+               Title="Desktop shortcuts"
+               AllowAdvertise="no">
         <ComponentGroupRef Id="ProductDesktopShortcuts"/>
       </Feature>
       <!-- <Feature Id="QuickLaunchShortcuts" -->
-      <!--          Title="Quick Launch shortcuts"> -->
+      <!--          Title="Quick Launch shortcuts" -->
+      <!--          AllowAdvertise="no"> -->
       <!--   <ComponentGroupRef Id="ProductQuickLaunchShortcuts"/> -->
       <!-- </Feature> -->
       <Feature Id="ContextMenuEntries"
-               Title='"Open with Emacs Client" context menu entries'>
+               Title='"Open with Emacs Client" context menu entries'
+               AllowAdvertise="no">
         <ComponentGroupRef Id="ShellContextMenuEntries"/>
       </Feature>
       <Feature Id="SetEMACS_INSTALLDIR"
-               Title='Set "EMACS_INSTALLDIR" environmental variable'>
+               Title='Set "EMACS_INSTALLDIR" environmental variable'
+               AllowAdvertise="no">
         <ComponentRef Id="SetEnv_EMACS_INSTALLDIR"/>
       </Feature>
       <Feature Id="SetPATH"
-               Title='Add the installation directory to "Path"'>
+               Title='Add the installation directory to "Path"'
+               AllowAdvertise="no">
         <ComponentRef Id="AddProductToPath" />
       </Feature>
       <!-- VC++ redistributable -->
       <?ifdef VCRedist ?>
       <Feature Id="VCRedistInstall"
-               Title="Visual C++ Runtime (Version: $(var.VCRedist))">
+               Title="Visual C++ Runtime (Version: $(var.VCRedist))"
+               AllowAdvertise="no">
         <MergeRef Id="VCRedist_CRT" />
         <?if $(var.VCRedist_MFC) = "yes" ?>
         <MergeRef Id="VCRedist_MFC" />

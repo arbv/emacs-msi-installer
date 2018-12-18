@@ -1,3 +1,10 @@
+;; Created by Artem Boldariev <artem.boldarev@gmail.com>, 2018.
+;; This file is distributed under the terms of CC0 license (Public Domain).
+
+;; See the 'LICENSE.txt' file for the additional details.
+;;
+;; This file is not part of GNU Emacs.
+
 (defun emacs-x86_64-build-p ()
   (not (null (string-match "^[xX]?86_64.+" system-configuration))))
 

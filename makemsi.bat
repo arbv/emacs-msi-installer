@@ -1,6 +1,8 @@
 @echo off
+rem Created by Artem Boldariev <artem.boldarev@gmail.com>, 2018.
+rem
 rem This file is distributed under the terms of CC0 license (Public Domain).
-rem See the 'installer/UNLICENSE.txt' file for the additional details.
+rem See the 'LICENSE.txt' file for the additional details.
 
 
 rem configuration Variables
@@ -18,7 +20,7 @@ set OldDir=%cd%
 cd "%~dp0\"
 
 rem Cleanup
-del %InstallerName%
+if exist %InstallerName% del %InstallerName%
 del %GeneratedWXSFiles%
 del %InstallerObjectFiles%
 

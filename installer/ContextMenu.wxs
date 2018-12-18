@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+Created by Artem Boldariev <artem.boldarev@gmail.com>, 2018.
+This file is distributed under the terms of CC0 license (Public Domain).
+
+See the 'LICENSE.txt' file for the additional details.
+-->
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?include Config.wxi?>
   <Fragment>

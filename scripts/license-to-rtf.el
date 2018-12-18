@@ -1,3 +1,10 @@
+;; Created by Artem Boldariev <artem.boldarev@gmail.com>, 2018.
+;; This file is distributed under the terms of CC0 license (Public Domain).
+
+;; See the 'LICENSE.txt' file for the additional details.
+;;
+;; This file is not part of GNU Emacs.
+
 (require 'cl)
 (require 'subr-x) ; string-trim
 
@@ -16,10 +23,16 @@
             (push (buffer-substring lbegin lend) lines))))
       (nreverse lines))))
 
+(defun cleanup-string-for-rtf (str)
+  (cl-labels ((replace-in-string (what with in)
+                                 (replace-regexp-in-string (regexp-quote what) with in nil 'literal)))
+    (let ((text (string-trim str)))
+      (replace-in-string "{" "\\'7b" (replace-in-string "}" "\\'7d" (replace-in-string "\\" "\\'5c" text))))))
+
 (defun lines-to-paragraphs (lines)
   (let ((pars))
     (dolist (l lines)
-      (let ((text (string-trim l)))
+      (let ((text (cleanup-string-for-rtf l)))
         (cond
          ((and (plusp (length text))
                (null pars))
