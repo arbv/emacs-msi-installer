@@ -14,7 +14,7 @@ See the 'LICENSE.txt' file for the additional details.
                  Guid="*"
                  Win64="$(var.Win64)">
         <RegistryKey Root="HKCR"
-                     Key="*\shell\openwemacs">
+                     Key="*\shell\OpenWithEmacs_$(var.UpgradeCode)">
           <RegistryValue Type="string"
                          Value="Open with &amp;Emacs Client"
                          KeyPath="yes"/>
@@ -28,7 +28,7 @@ See the 'LICENSE.txt' file for the additional details.
                  Guid="*"
                  Win64="$(var.Win64)">
         <RegistryKey Root="HKCR"
-                     Key="*\shell\openwemacsnewframe">
+                     Key="*\shell\OpenWithEmacsNewFrame_$(var.UpgradeCode)">
           <RegistryValue Type="string"
                          Value="Open with Emacs Client (new &amp;frame)"
                          KeyPath="yes"/>
