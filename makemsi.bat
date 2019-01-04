@@ -34,7 +34,11 @@ rem Generate fragments.
 rem These should be synchronised with values in 'Config.wxi'
 
 rem Emacs binaries
+xcopy /h .\emacs\.empty .\
+del /a .\emacs\.empty
 "%WIX%\bin\heat" dir .\emacs -cg EmacsData -var var.EmacsDirectoryPath -out .\installer\Emacs.wxs %HeatOptions%
+xcopy /h .\.empty .\emacs\
+del /a .empty
 
 rem build the installer
 "%WIX%\bin\candle" %WiXExtensions% -out .\installer\ %InstallerFiles%
