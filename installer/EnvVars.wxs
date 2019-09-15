@@ -22,7 +22,7 @@ See the 'LICENSE.txt' file for the additional details.
                      System="yes" />
         <RegistryValue Action="write"
                        Type="integer"
-                       Root="HKLM"
+                       Root="HKMU"
                        Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
                        Name="EnvAddedtoPath"
                        Value="1"
@@ -38,7 +38,7 @@ See the 'LICENSE.txt' file for the additional details.
                      System="yes" />
         <RegistryValue Action="write"
                        Type="integer"
-                       Root="HKLM"
+                       Root="HKMU"
                        Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
                        Name="EnvAddedEMACS_INSTALLDIR"
                        Value="1"

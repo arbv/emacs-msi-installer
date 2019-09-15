@@ -162,9 +162,16 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
 
     <!-- Set install path to the previous installation directory -->
     <Property Id="INSTALLDIR">
-      <RegistrySearch Id="RegInstallPath"
+      <RegistrySearch Id="RegInstallPathLocalMachine"
                       Type="raw"
                       Root="HKLM"
+                      Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
+                      Name="Path"
+                      Win64="$(var.Win64)"
+                      />
+      <RegistrySearch Id="RegInstallPathCurrentUser"
+                      Type="raw"
+                      Root="HKCU"
                       Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
                       Name="Path"
                       Win64="$(var.Win64)"
@@ -207,7 +214,7 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
     <DirectoryRef Id="INSTALLDIR">
       <Component Id="RegValueProductInstallPath" Guid="*" Win64="$(var.Win64)">
         <RegistryValue Id="RegValueInstallPath"
-                       Root="HKLM"
+                       Root="HKMU"
                        Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
                        Name="Path"
                        Value="[INSTALLDIR]"
