@@ -71,6 +71,10 @@ See the 'LICENSE.txt' file for the additional details.
   -->
   <?define MSIFASTINSTALL=7 ?>
   <!--
+      Set the following variable to to "yes" to support per user installations
+  -->
+  <?define PerUserSupport="yes" ?>
+  <!--
       The name of your application *.exe files. These will be used to kill the process when updating
       and creating the desktop shortcut
   -->

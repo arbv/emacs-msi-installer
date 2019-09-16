@@ -14,7 +14,7 @@ See the 'LICENSE.txt' file for the additional details.
         properly and without the errors.
         It is believed to be a false positive.
     -->
-    <DirectoryRef Id="INSTALLDIR">
+    <DirectoryRef Id="APPLICATIONFOLDER">
       <Directory Id="EmacsBinDir" Name="bin" />
     </DirectoryRef>
 
@@ -25,7 +25,7 @@ See the 'LICENSE.txt' file for the additional details.
         <Shortcut Id="EmacsStart.lnk"
                   Directory="ProgramMenuDir"
                   Name="$(var.ProductName).lnk"
-                  Target="[INSTALLDIR]\bin\runemacs.exe"
+                  Target="[APPLICATIONFOLDER]\bin\runemacs.exe"
                   WorkingDirectory="EmacsBinDir" />
         <RegistryValue Action="write"
                        Type="integer"
@@ -46,7 +46,7 @@ See the 'LICENSE.txt' file for the additional details.
         <Shortcut Id="EmacsDesktop.lnk"
                   Directory="DesktopDir"
                   Name="$(var.ProductName).lnk"
-                  Target="[INSTALLDIR]\bin\runemacs.exe"
+                  Target="[APPLICATIONFOLDER]\bin\runemacs.exe"
                   WorkingDirectory="EmacsBinDir" />
         <RegistryValue Action="write"
                        Type="integer"
@@ -67,7 +67,7 @@ See the 'LICENSE.txt' file for the additional details.
     <!--     <Shortcut Id="EmacsQuickLaunch.lnk" -->
     <!--               Directory="QuickLaunchDir" -->
     <!--               Name="$(var.ProductName).lnk" -->
-    <!--               Target="[INSTALLDIR]\bin\runemacs.exe"/> -->
+    <!--               Target="[APPLICATIONFOLDER]\bin\runemacs.exe"/> -->
     <!--     <RegistryValue Action="write" -->
     <!--                    Type="integer" -->
     <!--                    Root="HKMU" -->

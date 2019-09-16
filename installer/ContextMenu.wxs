@@ -8,7 +8,7 @@ See the 'LICENSE.txt' file for the additional details.
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?include Config.wxi?>
   <Fragment>
-    <DirectoryRef Id="INSTALLDIR">
+    <DirectoryRef Id="APPLICATIONFOLDER">
       <!-- context menu description  -->
       <Component Id="OpenWithEmacsMenuEntry"
                  Guid="*"
@@ -20,7 +20,7 @@ See the 'LICENSE.txt' file for the additional details.
                          KeyPath="yes"/>
           <RegistryKey Key="command">
             <RegistryValue Type="string"
-                           Value='[INSTALLDIR]bin\emacsclientw.exe -n -a "" "%1"'/>
+                           Value='[APPLICATIONFOLDER]bin\emacsclientw.exe -n -a "" "%1"'/>
           </RegistryKey>
         </RegistryKey>
       </Component>
@@ -34,7 +34,7 @@ See the 'LICENSE.txt' file for the additional details.
                          KeyPath="yes"/>
           <RegistryKey Key="command">
             <RegistryValue Type="string"
-                           Value='[INSTALLDIR]bin\emacsclientw.exe -n -c -a "" "%1"'/>
+                           Value='[APPLICATIONFOLDER]bin\emacsclientw.exe -n -c -a "" "%1"'/>
           </RegistryKey>
         </RegistryKey>
       </Component>

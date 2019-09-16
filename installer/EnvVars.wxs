@@ -8,18 +8,18 @@ See the 'LICENSE.txt' file for the additional details.
 <?include Config.wxi?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
-    <DirectoryRef Id="INSTALLDIR">
+    <DirectoryRef Id="APPLICATIONFOLDER">
       <!-- add product to path -->
-      <Component Id="AddProductToPath"
+	  <Component Id="AddProductToPath"
                  Guid="*"
                  Win64="$(var.Win64)">
         <Environment Id="Env_PATH"
                      Name="PATH"
-                     Value="[INSTALLDIR]bin\"
+                     Value="[APPLICATIONFOLDER]bin\"
                      Separator=";"
                      Action="set"
                      Part="last"
-                     System="yes" />
+                     System="no" />
         <RegistryValue Action="write"
                        Type="integer"
                        Root="HKMU"
@@ -33,9 +33,9 @@ See the 'LICENSE.txt' file for the additional details.
                  Win64="$(var.Win64)">
         <Environment Id="Env_EMACS_INSTALLDIR"
                      Name="EMACS_INSTALLDIR"
-                     Value="[INSTALLDIR]"
+                     Value="[APPLICATIONFOLDER]"
                      Action="set"
-                     System="yes" />
+                     System="no" />
         <RegistryValue Action="write"
                        Type="integer"
                        Root="HKMU"

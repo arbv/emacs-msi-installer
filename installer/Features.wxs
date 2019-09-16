@@ -44,6 +44,7 @@ See the 'LICENSE.txt' file for the additional details.
         <ComponentRef Id="AddProductToPath" />
       </Feature>
       <!-- VC++ redistributable -->
+      <?if $(var.PerUserSupport) = "yes" ?>
       <?ifdef VCRedist ?>
       <Feature Id="VCRedistInstall"
                Title="Visual C++ Runtime (Version: $(var.VCRedist))"
@@ -60,6 +61,7 @@ See the 'LICENSE.txt' file for the additional details.
         <MergeRef Id="VCRedist_CXXAMP" />
         <?endif?>
       </Feature>
+      <?endif?>
       <?endif?>
     </FeatureGroup>
   </Fragment>

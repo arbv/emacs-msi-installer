@@ -30,10 +30,31 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
     <Package InstallerVersion="301"
              Platform="$(var.Platform)"
              Compressed="yes"
-             InstallScope="perMachine"/>
+             />
     <Media Id="1"
            Cabinet="data.cab"
            EmbedCab="yes" />
+    <!--
+        For dual purpose installers
+        Requires WixUI_Advanced Dialog Set
+        See also:
+        https://docs.microsoft.com/ru-ru/windows/win32/msi/single-package-authoring?redirectedfrom=MSDN
+        https://stackoverflow.com/questions/52707573/hide-features-based-on-allusers-msiinstallperuser
+        https://wixtoolset.org//documentation/manual/v3/wixui/dialog_reference/wixui_advanced.html
+        http://windows-installer-xml-wix-toolset.687559.n2.nabble.com/dual-purpose-installer-ALLUSERS-2-and-Bootstrapper-td7591740.html
+        http://www.joyofsetup.com/2008/04/01/new-wix-feature-setting-package-installation-scope/
+        https://blogs.msdn.microsoft.com/astebner/2007/11/18/using-wix-3-0-to-create-a-per-user-msi-that-does-not-prompt-for-elevation-on-windows-vista/
+    -->
+	<?if $(var.PerUserSupport) = "yes" ?>
+    <Property Id="ALLUSERS" Value="2" />
+    <Property Id="MSIINSTALLPERUSER" Value="{}" />
+	<?else?>
+	<Property Id="ALLUSERS" Value="1" />
+	<WixVariable Id="WixUISupportPerUser" Value="0" />
+	<?endif?>
+	<!-- Try to install per-machine by default -->
+	<Property Id="WixAppFolder" Value="WixPerMachineFolder" />
+    <Property Id="ApplicationFolderName" Value="$(var.ProductName)" />
     <!-- Icon in Add/Remove programs -->
     <?ifdef ProductIconFile ?>
     <Icon Id="ProductIcon.ico" SourceFile="$(var.ProductIconFile)" />
@@ -96,16 +117,24 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
                            RebootPrompt="no"
                            Target="$(var.ConsoleProcessName)" />
     <?endif?>
-    <!-- Installation GUI description. -->
-    <!-- <UIRef Id="WixUI_InstallDir" /> -->
-    <UIRef Id="WixUI_FeatureTree" />
-    <UI>
+	<!-- Installation GUI description. -->
+    <UI Id="ProductInstallationUI">
       <!-- These dialog references are needed for CloseApplication above to work correctly -->
       <DialogRef Id="FilesInUse" />
       <DialogRef Id="MsiRMFilesInUse" />
       <!-- Here we'll add the GUI logic for installation and updating in a future post-->
+	  <?if $(var.PerUserSupport) = "yes" ?>
+      <Publish Dialog="InstallScopeDlg" Control="Next" Property="MSIINSTALLPERUSER" Value="{}" Order="2"><![CDATA[WixAppFolder = "WixPerMachineFolder"]]></Publish>
+	  <Publish Dialog="InstallScopeDlg" Control="Next" Property="MSIINSTALLPERUSER" Value="1" Order="3"><![CDATA[WixAppFolder = "WixPerUserFolder"]]></Publish>
+	  <?endif?>
+	  <!-- <UIRef Id="WixUI_InstallDir" /> -->
+	  <?if $(var.PerUserSupport) = "yes" ?>
+	  <UIRef Id="WixUI_Advanced" />
+	  <?else?>
+	  <UIRef Id="WixUI_FeatureTree" />
+	  <?endif?>
     </UI>
-
+	<UIRef Id="ProductInstallationUI" />
     <Directory Id="TARGETDIR" Name="SourceDir">
       <!-- Menu directory structure -->
       <Directory Id="ProgramMenuFolder">
@@ -129,22 +158,19 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
       <!-- Program installation directory structure -->
       <?if $(var.Win64) = "yes" ?>
       <Directory Id="ProgramFiles64Folder">
-        <Directory Id="INSTALLLOCATION"
+        <Directory Id="APPLICATIONFOLDER"
                    Name="$(var.ProductName)">
-          <Directory Id="INSTALLDIR">
-          </Directory>
         </Directory>
       </Directory>
       <?else?>
       <Directory Id="ProgramFilesFolder">
-        <Directory Id="INSTALLLOCATION"
+        <Directory Id="APPLICATIONFOLDER"
                    Name="$(var.ProductName)">
-          <Directory Id="INSTALLDIR">
-          </Directory>
         </Directory>
       </Directory>
       <?endif?>
       <!-- conditionally include Visual Studio C++ Runtime Files -->
+	  <?if $(var.PerUserSupport) = "yes" ?>
       <?ifdef VCRedist ?>
       <Merge Id="VCRedist_CRT" SourceFile="$(env.programfiles)\Common Files\Merge Modules\Microsoft_VC$(var.VCRedist)_CRT_$(var.Platform).msm" DiskId="1" Language="0"/>
       <?if $(var.VCRedist_MFC) = "yes" ?>
@@ -158,10 +184,44 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
       <Merge Id="VCRedist_CXXAMP" SourceFile="$(env.programfiles)\Common Files\Merge Modules\Microsoft_VC$(var.VCRedist)_CXXAMP_$(var.Platform).msm" DiskId="1" Language="0"/>
       <?endif?>
       <?endif?>
+	  <?endif?>
     </Directory>
 
-    <!-- Set install path to the previous installation directory -->
-    <Property Id="INSTALLDIR">
+    <?ifdef MSIFASTINSTALL?>
+    <Property Id="MSIFASTINSTALL">$(var.MSIFASTINSTALL)</Property>
+    <?endif?>
+
+    <!-- Save and restore APPLICATIONFOLDER -->
+    
+    <!-- 
+         Save the command line value APPLICATIONFOLDER and restore it later in the sequence or
+         it will be overwritten by the value saved to the registry during an upgrade.
+         http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/
+    -->
+    <CustomAction Id="SaveCmdLineValueAPPLICATIONFOLDER"
+                  Property="CMDLINE_APPLICATIONFOLDER"
+                  Value="[APPLICATIONFOLDER]"
+                  Execute="firstSequence" />
+    <CustomAction Id="SetFromCmdLineValueAPPLICATIONFOLDER"
+                  Property="APPLICATIONFOLDER"
+                  Value="[CMDLINE_APPLICATIONFOLDER]"
+                  Execute="firstSequence" />
+    <InstallUISequence>
+      <Custom Action="SaveCmdLineValueAPPLICATIONFOLDER" Before="AppSearch" />
+      <Custom Action="SetFromCmdLineValueAPPLICATIONFOLDER" After="AppSearch">
+        CMDLINE_APPLICATIONFOLDER
+      </Custom>
+    </InstallUISequence>
+    <InstallExecuteSequence>
+      <Custom Action="SaveCmdLineValueAPPLICATIONFOLDER" Before="AppSearch" />
+      <Custom Action="SetFromCmdLineValueAPPLICATIONFOLDER" After="AppSearch">
+        CMDLINE_APPLICATIONFOLDER
+      </Custom>
+    </InstallExecuteSequence>
+
+	<!-- Set install path to the previous installation directory -->
+	<?if $(var.PerUserSupport) = "yes" ?>
+	<Property Id="APPLICATIONFOLDER_SYSTEM">
       <RegistrySearch Id="RegInstallPathLocalMachine"
                       Type="raw"
                       Root="HKLM"
@@ -169,6 +229,8 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
                       Name="Path"
                       Win64="$(var.Win64)"
                       />
+	</Property>
+	<Property Id="APPLICATIONFOLDER_USER">
       <RegistrySearch Id="RegInstallPathCurrentUser"
                       Type="raw"
                       Root="HKCU"
@@ -176,56 +238,67 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
                       Name="Path"
                       Win64="$(var.Win64)"
                       />
-    </Property>
+	</Property>
+	<CustomAction Id="SetPerUserFolder" Property="WixPerUserFolder" Value="[APPLICATIONFOLDER_USER]" Execute="immediate"/>
+    <CustomAction Id="SetPerMachineFolder" Property="WixPerMachineFolder" Value="[APPLICATIONFOLDER_SYSTEM]" Execute="immediate"/>
+	<CustomAction Id="SetAppFolderPerUser" Property="APPLICATIONFOLDER" Value="[APPLICATIONFOLDER_USER]" Execute="immediate"/>
+    <CustomAction Id="SetAppFolderPerMachine" Property="APPLICATIONFOLDER" Value="[APPLICATIONFOLDER_SYSTEM]" Execute="immediate"/>
+	<CustomAction Id="EnableMsiInstallPerUser" Property="MSIINSTALLPERUSER" Value="1" Execute="immediate"/>
+	<CustomAction Id="SetInstallPerUser" Property="WixAppFolder" Value="WixPerUserFolder" Execute="immediate"/>
+    <CustomAction Id="SetInstallPerMachine" Property="WixAppFolder" Value="WixPerMachineFolder" Execute="immediate"/>
+	<CustomAction Id="DisablePerUser" Property="ALLUSERS" Value="1" Execute="immediate"/>
+	<CustomAction Id="EnablePerUser" Property="ALLUSERS" Value="{}" Execute="immediate"/>
+	<InstallExecuteSequence>
+      <Custom Action="SetPerUserFolder" After="WixSetDefaultPerMachineFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
+      <Custom Action="SetPerMachineFolder" After="SetPerUserFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
+	  <Custom Action="SetInstallPerUser" After="SetPerMachineFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
+	  <Custom Action="SetInstallPerMachine" After="SetInstallPerUser"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
 
-    <?ifdef MSIFASTINSTALL?>
-    <Property Id="MSIFASTINSTALL">$(var.MSIFASTINSTALL)</Property>
-    <?endif?>
-
-    <!-- Save and restore INSTALLDIR -->
-    
-    <!-- 
-         Save the command line value INSTALLDIR and restore it later in the sequence or
-         it will be overwritten by the value saved to the registry during an upgrade.
-         http://robmensching.com/blog/posts/2010/5/2/the-wix-toolsets-remember-property-pattern/
-    -->
-    <CustomAction Id="SaveCmdLineValueINSTALLDIR"
-                  Property="CMDLINE_INSTALLDIR"
-                  Value="[INSTALLDIR]"
-                  Execute="firstSequence" />
-    <CustomAction Id="SetFromCmdLineValueINSTALLDIR"
-                  Property="INSTALLDIR"
-                  Value="[CMDLINE_INSTALLDIR]"
-                  Execute="firstSequence" />
-    <InstallUISequence>
-      <Custom Action="SaveCmdLineValueINSTALLDIR" Before="AppSearch" />
-      <Custom Action="SetFromCmdLineValueINSTALLDIR" After="AppSearch">
-        CMDLINE_INSTALLDIR
-      </Custom>
-    </InstallUISequence>
-    <InstallExecuteSequence>
-      <Custom Action="SaveCmdLineValueINSTALLDIR" Before="AppSearch" />
-      <Custom Action="SetFromCmdLineValueINSTALLDIR" After="AppSearch">
-        CMDLINE_INSTALLDIR
-      </Custom>
+	  <Custom Action="SetAppFolderPerUser" After="SetFromCmdLineValueAPPLICATIONFOLDER"><![CDATA[ACTION="INSTALL" AND APPLICATINFOLDER = "" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
+	  <Custom Action="SetAppFolderPerMachine" After="SetAppFolderPerUser"><![CDATA[ACTION="INSTALL" AND APPLICATINFOLDER = "" AND APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
+	  <Custom Action="EnableMsiInstallPerUser" After="SetAppFolderPerMachine"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
+	  <Custom Action="EnablePerUser" After="EnableMsiInstallPerUser"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
+	  <Custom Action="DisablePerUser" After="EnablePerUser"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
     </InstallExecuteSequence>
+	<InstallUISequence>
+	  <Custom Action="SetPerUserFolder" After="WixSetDefaultPerMachineFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
+      <Custom Action="SetPerMachineFolder" After="SetPerUserFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
+	  <Custom Action="SetInstallPerUser" After="SetPerMachineFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
+	  <Custom Action="SetInstallPerMachine" After="SetInstallPerUser"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
+
+	  <Custom Action="SetAppFolderPerUser" After="SetFromCmdLineValueAPPLICATIONFOLDER"><![CDATA[ACTION="INSTALL" AND APPLICATINFOLDER = "" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
+	  <Custom Action="SetAppFolderPerMachine" After="SetAppFolderPerUser"><![CDATA[ACTION="INSTALL" AND APPLICATINFOLDER = "" AND APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
+	  <Custom Action="EnableMsiInstallPerUser" After="SetAppFolderPerMachine"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
+	  <Custom Action="EnablePerUser" After="EnableMsiInstallPerUser"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
+	  <Custom Action="DisablePerUser" After="EnablePerUser"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
+	</InstallUISequence>
+	<?else?>
+	<Property Id="APPLICATIONFOLDER">
+      <RegistrySearch Id="RegInstallPathLocalMachine"
+                      Type="raw"
+                      Root="HKLM"
+                      Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
+                      Name="Path"
+                      Win64="$(var.Win64)"
+                      />
+    </Property>
+	<?endif?>
 
     <!-- Write Installation Path to registry -->
-    <DirectoryRef Id="INSTALLDIR">
+    <DirectoryRef Id="APPLICATIONFOLDER">
       <Component Id="RegValueProductInstallPath" Guid="*" Win64="$(var.Win64)">
         <RegistryValue Id="RegValueInstallPath"
                        Root="HKMU"
                        Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
                        Name="Path"
-                       Value="[INSTALLDIR]"
+                       Value="[APPLICATIONFOLDER]"
                        Type="string"
                        KeyPath="yes"/>
       </Component>
     </DirectoryRef>
-
     <!-- Features -->
     <Feature Id="RootFeature"
-             ConfigurableDirectory="INSTALLDIR"
+             ConfigurableDirectory="APPLICATIONFOLDER"
              Title="$(var.ProductName)"
              Display="expand"
              Absent="disallow"
