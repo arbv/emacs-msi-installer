@@ -251,26 +251,26 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
 	<InstallExecuteSequence>
       <Custom Action="SetPerUserFolder" After="WixSetDefaultPerMachineFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
       <Custom Action="SetPerMachineFolder" After="SetPerUserFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
-	  <Custom Action="SetInstallPerUser" After="SetPerMachineFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
-	  <Custom Action="SetInstallPerMachine" After="SetInstallPerUser"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
+	  <Custom Action="SetInstallPerUser" After="SetPerMachineFolder"><![CDATA[ACTION="INSTALL" AND (APPLICATIONFOLDER_USER <> "" OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND NOT Privileged))]]></Custom>
+	  <Custom Action="SetInstallPerMachine" After="SetInstallPerUser"><![CDATA[ACTION="INSTALL" AND ((APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> "") OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND Privileged))]]></Custom>
 
 	  <Custom Action="SetAppFolderPerUser" After="SetFromCmdLineValueAPPLICATIONFOLDER"><![CDATA[ACTION="INSTALL" AND APPLICATINFOLDER = "" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
 	  <Custom Action="SetAppFolderPerMachine" After="SetAppFolderPerUser"><![CDATA[ACTION="INSTALL" AND APPLICATINFOLDER = "" AND APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
-	  <Custom Action="EnableMsiInstallPerUser" After="SetAppFolderPerMachine"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
-	  <Custom Action="EnablePerUser" After="EnableMsiInstallPerUser"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
-	  <Custom Action="DisablePerUser" After="EnablePerUser"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
+	  <Custom Action="EnableMsiInstallPerUser" After="SetAppFolderPerMachine"><![CDATA[ACTION="INSTALL" AND (APPLICATIONFOLDER_USER <> "" OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND NOT Privileged))]]></Custom>
+	  <Custom Action="EnablePerUser" After="EnableMsiInstallPerUser"><![CDATA[ACTION="INSTALL" AND (APPLICATIONFOLDER_USER <> "" OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND NOT Privileged))]]></Custom>
+	  <Custom Action="DisablePerUser" After="EnablePerUser"><![CDATA[ACTION="INSTALL" AND ((APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> "") OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND Privileged))]]></Custom>
     </InstallExecuteSequence>
 	<InstallUISequence>
 	  <Custom Action="SetPerUserFolder" After="WixSetDefaultPerMachineFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
       <Custom Action="SetPerMachineFolder" After="SetPerUserFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
-	  <Custom Action="SetInstallPerUser" After="SetPerMachineFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
-	  <Custom Action="SetInstallPerMachine" After="SetInstallPerUser"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
+	  <Custom Action="SetInstallPerUser" After="SetPerMachineFolder"><![CDATA[ACTION="INSTALL" AND (APPLICATIONFOLDER_USER <> "" OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND NOT Privileged))]]></Custom>
+	  <Custom Action="SetInstallPerMachine" After="SetInstallPerUser"><![CDATA[ACTION="INSTALL" AND ((APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> "") OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND Privileged))]]></Custom>
 
 	  <Custom Action="SetAppFolderPerUser" After="SetFromCmdLineValueAPPLICATIONFOLDER"><![CDATA[ACTION="INSTALL" AND APPLICATINFOLDER = "" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
 	  <Custom Action="SetAppFolderPerMachine" After="SetAppFolderPerUser"><![CDATA[ACTION="INSTALL" AND APPLICATINFOLDER = "" AND APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
-	  <Custom Action="EnableMsiInstallPerUser" After="SetAppFolderPerMachine"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
-	  <Custom Action="EnablePerUser" After="EnableMsiInstallPerUser"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
-	  <Custom Action="DisablePerUser" After="EnablePerUser"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
+	  <Custom Action="EnableMsiInstallPerUser" After="SetAppFolderPerMachine"><![CDATA[ACTION="INSTALL" AND (APPLICATIONFOLDER_USER <> "" OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND NOT Privileged))]]></Custom>
+	  <Custom Action="EnablePerUser" After="EnableMsiInstallPerUser"><![CDATA[ACTION="INSTALL" AND (APPLICATIONFOLDER_USER <> "" OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND NOT Privileged))]]></Custom>
+	  <Custom Action="DisablePerUser" After="EnablePerUser"><![CDATA[ACTION="INSTALL" AND ((APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> "") OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND Privileged))]]></Custom>
 	</InstallUISequence>
 	<?else?>
 	<Property Id="APPLICATIONFOLDER">
