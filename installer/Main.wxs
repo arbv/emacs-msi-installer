@@ -48,6 +48,8 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
 	<?if $(var.PerUserSupport) = "yes" ?>
     <Property Id="ALLUSERS" Value="2" />
     <Property Id="MSIINSTALLPERUSER" Value="{}" />
+    <!-- https://docs.microsoft.com/en-us/windows/win32/msi/msiuserealadmindetection -->
+    <Property Id="MSIUSEREALADMINDETECTION" Value="1" />
 	<?else?>
 	<Property Id="ALLUSERS" Value="1" />
 	<WixVariable Id="WixUISupportPerUser" Value="0" />
@@ -124,6 +126,9 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
       <DialogRef Id="MsiRMFilesInUse" />
       <!-- Here we'll add the GUI logic for installation and updating in a future post-->
 	  <?if $(var.PerUserSupport) = "yes" ?>
+      <!-- We need this to make it possible for non-admin users to elevate privileges and install software on per-machine basis. Without this scope selection dialog is disabled. Seems like an ugly hack, though. -->
+      <Publish Dialog="AdvancedWelcomeEulaDlg" Control="Advanced" Property="Privileged" Value="1" Order="1">!(wix.WixUISupportPerMachine) AND !(wix.WixUISupportPerUser)</Publish>
+
       <Publish Dialog="InstallScopeDlg" Control="Next" Property="MSIINSTALLPERUSER" Value="{}" Order="2"><![CDATA[WixAppFolder = "WixPerMachineFolder"]]></Publish>
 	  <Publish Dialog="InstallScopeDlg" Control="Next" Property="MSIINSTALLPERUSER" Value="1" Order="3"><![CDATA[WixAppFolder = "WixPerUserFolder"]]></Publish>
 	  <?endif?>
@@ -239,6 +244,11 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
                       Win64="$(var.Win64)"
                       />
 	</Property>
+    <?if $(var.Win64) = "yes" ?>
+	<CustomAction Id="SetDefaultPerMachineFolder" Property="WixPerMachineFolder" Value="[ProgramFiles64Folder][ApplicationFolderName]" Execute="immediate" />
+    <?else?>
+    <CustomAction Id="SetDefaultPerMachineFolder" Property="WixPerMachineFolder" Value="[ProgramFilesFolder][ApplicationFolderName]" Execute="immediate" />
+    <?endif?>
 	<CustomAction Id="SetPerUserFolder" Property="WixPerUserFolder" Value="[APPLICATIONFOLDER_USER]" Execute="immediate"/>
     <CustomAction Id="SetPerMachineFolder" Property="WixPerMachineFolder" Value="[APPLICATIONFOLDER_SYSTEM]" Execute="immediate"/>
 	<CustomAction Id="SetAppFolderPerUser" Property="APPLICATIONFOLDER" Value="[APPLICATIONFOLDER_USER]" Execute="immediate"/>
@@ -249,7 +259,8 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
 	<CustomAction Id="DisablePerUser" Property="ALLUSERS" Value="1" Execute="immediate"/>
 	<CustomAction Id="EnablePerUser" Property="ALLUSERS" Value="{}" Execute="immediate"/>
 	<InstallExecuteSequence>
-      <Custom Action="SetPerUserFolder" After="WixSetDefaultPerMachineFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
+      <Custom Action="SetDefaultPerMachineFolder" After="WixSetDefaultPerMachineFolder"/>
+      <Custom Action="SetPerUserFolder" After="SetDefaultPerMachineFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
       <Custom Action="SetPerMachineFolder" After="SetPerUserFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
 	  <Custom Action="SetInstallPerUser" After="SetPerMachineFolder"><![CDATA[ACTION="INSTALL" AND (APPLICATIONFOLDER_USER <> "" OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND NOT Privileged))]]></Custom>
 	  <Custom Action="SetInstallPerMachine" After="SetInstallPerUser"><![CDATA[ACTION="INSTALL" AND ((APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> "") OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND Privileged))]]></Custom>
@@ -261,7 +272,8 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
 	  <Custom Action="DisablePerUser" After="EnablePerUser"><![CDATA[ACTION="INSTALL" AND ((APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> "") OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND Privileged))]]></Custom>
     </InstallExecuteSequence>
 	<InstallUISequence>
-	  <Custom Action="SetPerUserFolder" After="WixSetDefaultPerMachineFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
+      <Custom Action="SetDefaultPerMachineFolder" After="WixSetDefaultPerMachineFolder"/>
+      <Custom Action="SetPerUserFolder" After="SetDefaultPerMachineFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_USER <> ""]]></Custom>
       <Custom Action="SetPerMachineFolder" After="SetPerUserFolder"><![CDATA[ACTION="INSTALL" AND APPLICATIONFOLDER_SYSTEM <> ""]]></Custom>
 	  <Custom Action="SetInstallPerUser" After="SetPerMachineFolder"><![CDATA[ACTION="INSTALL" AND (APPLICATIONFOLDER_USER <> "" OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND NOT Privileged))]]></Custom>
 	  <Custom Action="SetInstallPerMachine" After="SetInstallPerUser"><![CDATA[ACTION="INSTALL" AND ((APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM <> "") OR (APPLICATIONFOLDER_USER = "" AND APPLICATIONFOLDER_SYSTEM = "" AND Privileged))]]></Custom>
