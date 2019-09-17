@@ -42,7 +42,7 @@ del /a .empty
 
 rem build the installer
 "%WIX%\bin\candle" %WiXExtensions% -out .\installer\ %InstallerFiles%
-"%WIX%\bin\light" %WiXExtensions% -sw1076 -sice:ICE57 -dcl:high -cultures:en-US %InstallerObjectFiles% -out %InstallerName%
+"%WIX%\bin\light" %WiXExtensions% -sw1076 -dcl:high -cultures:en-US %InstallerObjectFiles% -out %InstallerName%
 
 rem rename Emacs installer binary
 .\emacs\bin\emacs.exe -Q --batch -l .\scripts\rename-installer.el

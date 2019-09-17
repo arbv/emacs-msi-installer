@@ -29,7 +29,7 @@ See the 'LICENSE.txt' file for the additional details.
                   WorkingDirectory="EmacsBinDir" />
         <RegistryValue Action="write"
                        Type="integer"
-                       Root="HKMU"
+                       Root="HKCU"
                        Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
                        Name="StartMenuShortcutsInstalled"
                        Value="1" KeyPath="yes"/>
@@ -50,7 +50,7 @@ See the 'LICENSE.txt' file for the additional details.
                   WorkingDirectory="EmacsBinDir" />
         <RegistryValue Action="write"
                        Type="integer"
-                       Root="HKMU"
+                       Root="HKCU"
                        Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
                        Name="DesktopShortcutsInstalled"
                        Value="1" KeyPath="yes"/>
@@ -70,7 +70,7 @@ See the 'LICENSE.txt' file for the additional details.
     <!--               Target="[APPLICATIONFOLDER]\bin\runemacs.exe"/> -->
     <!--     <RegistryValue Action="write" -->
     <!--                    Type="integer" -->
-    <!--                    Root="HKMU" -->
+    <!--                    Root="HKCU" -->
     <!--                    Key="Software\$(var.ManufacturerName)\$(var.ProductName)" -->
     <!--                    Name="QuickLaunchShortcutsInstalled" -->
     <!--                    Value="1" KeyPath="yes"/> -->
