@@ -33,6 +33,7 @@ See the 'LICENSE.txt' file for the additional details.
                AllowAdvertise="no">
         <ComponentGroupRef Id="ShellContextMenuEntries"/>
       </Feature>
+      <?if $(var.PerUserSupport) != "yes" ?>
       <Feature Id="SetEMACS_INSTALLDIR"
                Title='Set "EMACS_INSTALLDIR" environmental variable'
                AllowAdvertise="no">
@@ -43,6 +44,7 @@ See the 'LICENSE.txt' file for the additional details.
                AllowAdvertise="no">
         <ComponentRef Id="AddProductToPath" />
       </Feature>
+      <?endif?>
       <!-- VC++ redistributable -->
       <?if $(var.PerUserSupport) = "yes" ?>
       <?ifdef VCRedist ?>

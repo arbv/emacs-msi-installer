@@ -10,6 +10,7 @@ See the 'LICENSE.txt' file for the additional details.
   <Fragment>
     <DirectoryRef Id="APPLICATIONFOLDER">
       <!-- add product to path -->
+	  <?if $(var.PerUserSupport) != "yes" ?>
 	  <Component Id="AddProductToPath"
                  Guid="*"
                  Win64="$(var.Win64)">
@@ -19,10 +20,10 @@ See the 'LICENSE.txt' file for the additional details.
                      Separator=";"
                      Action="set"
                      Part="last"
-                     System="no" />
+                     System="yes" />
         <RegistryValue Action="write"
                        Type="integer"
-                       Root="HKMU"
+                       Root="HKLM"
                        Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
                        Name="EnvAddedtoPath"
                        Value="1"
@@ -35,15 +36,16 @@ See the 'LICENSE.txt' file for the additional details.
                      Name="EMACS_INSTALLDIR"
                      Value="[APPLICATIONFOLDER]"
                      Action="set"
-                     System="no" />
+                     System="yes" />
         <RegistryValue Action="write"
                        Type="integer"
-                       Root="HKMU"
+                       Root="HKLM"
                        Key="Software\$(var.ManufacturerName)\$(var.ProductName)"
                        Name="EnvAddedEMACS_INSTALLDIR"
                        Value="1"
                        KeyPath="yes"/>
       </Component>
+	  <?endif?>
     </DirectoryRef>
   </Fragment>
 </Wix>
