@@ -50,6 +50,8 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
     <Property Id="MSIINSTALLPERUSER" Value="{}" />
     <!-- https://docs.microsoft.com/en-us/windows/win32/msi/msiuserealadmindetection -->
     <Property Id="MSIUSEREALADMINDETECTION" Value="1" />
+
+	<Property Id="SavedPrivileged" Value="{}" />
 	<?else?>
 	<Property Id="ALLUSERS" Value="1" />
 	<WixVariable Id="WixUISupportPerUser" Value="0" />
@@ -127,10 +129,14 @@ Using 'dark.exe' *.msi decompiler seems to be the most efficient way to learn ab
       <!-- Here we'll add the GUI logic for installation and updating in a future post-->
 	  <?if $(var.PerUserSupport) = "yes" ?>
       <!-- We need this to make it possible for non-admin users to elevate privileges and install software on per-machine basis. Without this scope selection dialog is disabled. Seems like an ugly hack, though. -->
-      <Publish Dialog="AdvancedWelcomeEulaDlg" Control="Advanced" Property="Privileged" Value="1" Order="1">!(wix.WixUISupportPerMachine) AND !(wix.WixUISupportPerUser)</Publish>
+	  <Publish Dialog="AdvancedWelcomeEulaDlg" Control="Advanced" Property="SavedPrivileged" Value="[Privileged]" Order="1">!(wix.WixUISupportPerMachine) AND !(wix.WixUISupportPerUser)</Publish>		
+      <Publish Dialog="AdvancedWelcomeEulaDlg" Control="Advanced" Property="Privileged" Value="1" Order="2">!(wix.WixUISupportPerMachine) AND !(wix.WixUISupportPerUser)</Publish>
 
-      <Publish Dialog="InstallScopeDlg" Control="Next" Property="MSIINSTALLPERUSER" Value="{}" Order="2"><![CDATA[WixAppFolder = "WixPerMachineFolder"]]></Publish>
-	  <Publish Dialog="InstallScopeDlg" Control="Next" Property="MSIINSTALLPERUSER" Value="1" Order="3"><![CDATA[WixAppFolder = "WixPerUserFolder"]]></Publish>
+      <Publish Dialog="InstallScopeDlg" Control="Next" Property="MSIINSTALLPERUSER" Value="{}" Order="1"><![CDATA[WixAppFolder = "WixPerMachineFolder"]]></Publish>
+	  <Publish Dialog="InstallScopeDlg" Control="Next" Property="MSIINSTALLPERUSER" Value="1" Order="2"><![CDATA[WixAppFolder = "WixPerUserFolder"]]></Publish>
+	  <Publish Dialog="InstallScopeDlg" Control="Next" Property="Privileged" Value="[SavedPrivileged]" Order="3">!(wix.WixUISupportPerMachine) AND !(wix.WixUISupportPerUser)</Publish>
+
+	  <Publish Dialog="InstallScopeDlg" Control="Back" Property="Privileged" Value="[SavedPrivileged]" Order="1">!(wix.WixUISupportPerMachine) AND !(wix.WixUISupportPerUser)</Publish>
 	  <?endif?>
 	  <!-- <UIRef Id="WixUI_InstallDir" /> -->
 	  <?if $(var.PerUserSupport) = "yes" ?>
