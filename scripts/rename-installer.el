@@ -11,9 +11,17 @@
 (defun get-installer-name ()
   (format "emacs-%d.%d-%s" emacs-major-version emacs-minor-version (get-emacs-patform)))
 
-(defun rename-installer ()
-  (let ((new-msi-name (concat (get-installer-name) ".msi"))
-        (new-wixpdb-name (concat (get-installer-name) ".wixpdb"))
+(defun rename-installer (&optional per-user)
+  (let ((new-msi-name (concat (get-installer-name)
+			      (if per-user
+				  "-per-user"
+				"")
+			      ".msi"))
+        (new-wixpdb-name (concat (get-installer-name)
+				 (if per-user
+				     "-per-user"
+				   "")
+				 ".wixpdb"))
         (msi-name "emacs-installer.msi")
         (wixpdb-name "emacs-installer.wixpdb"))
     (when (file-exists-p msi-name)
@@ -21,5 +29,5 @@
     (when (file-exists-p wixpdb-name)
       (rename-file wixpdb-name new-wixpdb-name t))))
 
-(rename-installer)
+;;(rename-installer)
 

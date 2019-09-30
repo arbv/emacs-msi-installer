@@ -73,7 +73,7 @@ See the 'LICENSE.txt' file for the additional details.
   <!--
       Set the following variable to to "yes" to support per user installations
   -->
-  <?define PerUserSupport="no" ?>
+  <!-- <?define PerUserSupport="no" ?> -->
   <!--
       The name of your application *.exe files. These will be used to kill the process when updating
       and creating the desktop shortcut

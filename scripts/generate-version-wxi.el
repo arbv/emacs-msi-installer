@@ -8,7 +8,7 @@
 (defun emacs-x86_64-build-p ()
   (not (null (string-match "^[xX]?86_64.+" system-configuration))))
 
-(defun generate-version-wxi (filename)
+(defun generate-version-wxi (filename per-user-support)
   (when (file-exists-p filename)
     (delete-file filename))
   (with-temp-buffer
@@ -23,8 +23,15 @@
     (insert (format "  <?define Win64=\"%s\" ?>\n" (if (emacs-x86_64-build-p)
                                                        "yes"
                                                      "no")))
+    (insert (format "   <?define PerUserSupport=\"%s\" ?>\n" (if per-user-support
+								 "yes"
+							       "no")))
     (insert "</Include>\n")
     (write-file filename)))
 
-(generate-version-wxi ".\\installer\\Version.wxi")
+(defun generate-version-per-machine ()
+  (generate-version-wxi ".\\installer\\Version.wxi" nil))
 
+
+(defun generate-version-per-user ()
+  (generate-version-wxi ".\\installer\\Version.wxi" t))
