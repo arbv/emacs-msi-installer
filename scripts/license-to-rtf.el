@@ -5,7 +5,8 @@
 ;;
 ;; This file is not part of GNU Emacs.
 
-(require 'cl)
+(require 'cl-lib)
+(require 'cl-extra)
 (require 'subr-x) ; string-trim
 
 (defun read-lines (filename)
@@ -34,13 +35,13 @@
     (dolist (l lines)
       (let ((text (cleanup-string-for-rtf l)))
         (cond
-         ((and (plusp (length text))
+         ((and (cl-plusp (length text))
                (null pars))
           (push text pars))
-         ((and (plusp (length text))
+         ((and (cl-plusp (length text))
                (car pars))
-          (setcar pars (concatenate 'string (car pars) " " text)))
-         ((plusp (length text))
+          (setcar pars (cl-concatenate 'string (car pars) " " text)))
+         ((cl-plusp (length text))
           (setcar pars text))
          (t (when (car pars)
               (push nil pars))))))
